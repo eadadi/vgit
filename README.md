@@ -5,7 +5,7 @@
 * vgit is an index of versions, where versions are lists of repositories that a commit is relevant for
 
 ## Installation (TODO)
-clone the repository, activate `vgit_install.sh` and then the variable `$vg` can be used to invoke the script
+clone the repository, (source) activate `. ./vgit_install.sh` and then the variable `$vg` can be used to invoke the script
 
 ## Example
 In the project super repository
