@@ -37,10 +37,10 @@ def get_version_by_name(name):
     names = [(key, versions[key]["Name"]) for key in versions]
     filtered_names = list(filter(lambda t: t[1] == name, names))
     if len(filtered_names) == 0:
-        raise KeyError("No versions hold this name..")
+        raise KeyError("No version has this name..")
     if len(filtered_names) > 1:
         print(filtered_names)
-        raise KeyError("Multiple versions hold this name..\n{}".format(filtered_names))
+        raise KeyError("Multiple versions have this name..\n{}".format(filtered_names))
     return versions[filtered_names[0][0]]
 
 def dump_version_by_hash(hash_value):
