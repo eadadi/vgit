@@ -4,7 +4,7 @@
 * vgit is small tool to handle commits writing for projects that are composed by many git repositories.
 * vgit is an index of versions, which are lists of repositories that define a commit
 
-## Installation (TODO)
+## Installation
 
 - clone the repository
 - invoke `vgit_install.sh`
@@ -25,7 +25,10 @@ In the project super repository initialize yaml file that will hold all versions
 then, start working on a commit that is relevant both for REPO1 & REPO2 with:
 
 ~~~
-vg add some_feature --load "checkout REPO1 BRANCH1 checkout REPO2 BRANCH2" --unload "master mainline" --description "A short description for that feature" --init
+vg add some_feature --load "checkout REPO1 BRANCH1 checkout REPO2 BRANCH2"\
+--unload "master mainline"\
+ --description "A short description for that feature"\
+--init
 ~~~
 
 In this way, an entry that holds this information will be stored in the yaml file (and can be directly modified there, too). Since the `--init` flag was specified the branches will be created too, and this version will be loaded (meaning that the action specified will take place in the ordder specified)
