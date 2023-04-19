@@ -7,6 +7,9 @@ import hashlib
 HOME_FOLDER = "{}/vgit".format(os.path.expanduser("~"))
 
 def init_versions_file_for_curr_super_repo():
+    if not os.path.exists(HOME_FOLDER):
+        print("[First invoke]: Create versions folder in {}, all versions yaml file will appear there".format(HOME_FOLDER))
+        os.makedirs(HOME_FOLDER)
     cwd = os.path.basename(os.getcwd())
     filename = "{0}/{1}.yaml".format(HOME_FOLDER, cwd)
     versions_file = open(filename, "a").close()
