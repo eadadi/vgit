@@ -20,7 +20,11 @@ def ls():
     """
     Display all existing versions
     """
-    versions = get_versions()
+    try:
+        versions = get_versions()
+    except FileNotFoundError:
+        print("Current repository was not initialized. run init command")
+        return
     print(yaml.dump(versions))
 
 @app.command()
@@ -32,6 +36,9 @@ def load(key: str):
         version = get_version_by_hash(key)
     except KeyError:
         version = get_version_by_name(key)
+    except FileNotFoundError:
+        print("Current repository was not initialized. run init command")
+        return
     if version:
         print(yaml.dump(version))
     operation_load(version)
