@@ -2,26 +2,41 @@
 
 ## Desctiprion
 * vgit is small tool to handle commits writing for projects that are composed by many git repositories.
-* vgit is an index of versions, where versions are lists of repositories that a commit is relevant for
+* vgit is an index of versions, which are lists of repositories that define a commit
 
 ## Installation (TODO)
-clone the repository, (source) activate `. ./vgit_install.sh` and then the variable `$vg` can be used to invoke the script
+
+- clone the repository
+- invoke `vgit_install.sh`
 
 ## Example
-In the project super repository
-`$vg init`
-creates the yaml file that holds all commits associated with that super repo
 
-then,
-```
-$vg add some_feature --load "checkout REPO1 BRANCH1 checkout REPO2 BRANCH2" --unload "master mainline" --description "A short description for that feature"
-```
-will create an entry in the yaml file that will allow later to load, unload this version:
-```
-$vg load some_feature
-```
+Let's look on the following structure
+~~~
+-SUPER-REPO
+	-REPO1
+	-REPO2
+~~~
 
-* Note that operation can be done both by the version hash value and by the version name. The reason for having hashes is to allow multiple names but still having unique identifier for a version
+In the project super repository initialize yaml file that will hold all versions with:
+
+`vg init`
+
+then, start working on a commit that is relevant both for REPO1 & REPO2 with:
+
+~~~
+vg add some_feature --load "checkout REPO1 BRANCH1 checkout REPO2 BRANCH2" --unload "master mainline" --description "A short description for that feature" --init
+~~~
+
+In this way, an entry that holds this information will be stored in the yaml file (and can be directly modified there, too). Since the `--init` flag was specified the branches will be created too, and this version will be loaded (meaning that the action specified will take place in the ordder specified)
+
+To unload this change we specified under the `--unload` flag the list of default branches. Then we can do:
+
+~~~
+vg load some_feature
+~~~
+
+* Note that load, etc can be done both by hash and by version name. The reason is to allow multiple names but still having unique identifier for a version
 
 
 ## Todo
