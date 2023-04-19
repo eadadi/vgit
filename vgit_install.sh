@@ -1,6 +1,6 @@
 #!/bin/bash
 pip install typer[all] pyyaml GitPython
-mkdir ~/vgit
-chmod +x vgit_cli.py
-export vg=`pwd`/vgit_cli.py
-echo "write \$vg to use the script"
+pip install pyinstaller
+echo "Invoking pyinstaller vgit_cli.py..."
+pyinstaller vgit_cli.py -n vg
+echo "add ./dist/vg/vg to your PATH, for example:\n\tln -s \`pwd\`/dist/vg/vg /bin/vg"
