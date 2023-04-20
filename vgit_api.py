@@ -17,8 +17,12 @@ def init_versions_file_for_curr_super_repo():
 
 def load_versions_of_current_super_repo():
     cwd = os.path.basename(os.getcwd())
-    versions_file = open("{0}/{1}.yaml".format(HOME_FOLDER, cwd), "r").read()
-    versions = yaml.load(versions_file, Loader=Loader)
+    try:
+        versions_file = open("{0}/{1}.yaml".format(HOME_FOLDER, cwd), "r")
+    except FileNotFoundError:
+        print("versions file {0}/{1}.yaml was not founded. run init".format(HOME_FOLDER, cwd))
+        return
+    versions = yaml.load(versions_file.read(), Loader=Loader)
     return versions
 
 def write_super_repo_versions_to_file(versions):

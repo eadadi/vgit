@@ -93,10 +93,14 @@ def add(name: str, load: str="", unload: str="", description: str="", identifier
         print("Number of branches on unload does not match number of repositories on load")
         return
 
-    if identifier == "":
-        new_version, identifier = make_version_and_hash(versions, name, description, action_repo_branch, unload_branches)
-    else:
-        new_version, identifier = make_version_and_hash(versions, name, description, action_repo_branch, identifier, unload_branches)
+    try:
+        if identifier == "":
+            new_version, identifier = make_version_and_hash(versions, name, description, action_repo_branch, unload_branches)
+        else:
+            new_version, identifier = make_version_and_hash(versions, name, description, action_repo_branch, identifier, unload_branches)
+    except KeyError:
+            print("There is an entry that already holds that version hash value. Consider using custom identifier")
+            return
 
     add_version_to_super_repo(versions, new_version, identifier)
     if init:
