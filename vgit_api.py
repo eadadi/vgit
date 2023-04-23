@@ -60,6 +60,10 @@ def do_checkout(stage, init_flag):
     else:
         return repo.checkout("HEAD", b=stage["branch"])
 
+def do_cherrypick(stage, init_flag):
+    g = git.cmd.Git()
+    return g.execute(["git","cherry-pick","-n", stage["branch"])
+
 def do_pull(stage, init_flag=False):
     repo = git.Repo(stage["repo"]).git
     return repo.pull("--rebase")
@@ -72,7 +76,8 @@ def do_review(stage, version_name):
 supported_actions = {
         "checkout": do_checkout,
         "pull": do_pull,
-        "review": do_review
+        "review": do_review,
+        "cherry-pick": do_cherrypick
         }
 
 def operation_review(version, init_flag = False):
