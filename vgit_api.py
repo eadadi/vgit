@@ -64,10 +64,24 @@ def do_pull(stage, init_flag=False):
     repo = git.Repo(stage["repo"]).git
     return repo.pull("--rebase")
 
+def do_review(stage, version_name):
+    g = git.cmd.Git()
+    output = g.execute(["git","review","-t", version_name])
+    return output
+
 supported_actions = {
         "checkout": do_checkout,
-        "pull": do_pull
+        "pull": do_pull,
+        "review": do_review
         }
+
+def operation_review(version, init_flag = False):
+    load_stages = version["load"]
+    for stage in load_stages:
+        stage_action = stage["action"]
+        output = do_review(stage, version["Name"])
+        print("On repo {}:".format(stage["repo"]).center(60,"="))
+        print(output)
 
 def operation_load(version, init_flag = False):
     load_stages = version["load"]

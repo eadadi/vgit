@@ -70,6 +70,19 @@ def pull(key: str):
     api.operation_pull(version)
 
 @app.command()
+def review(key: str):
+    """
+    Uploads patch to gerrit review system, The behaviour is to upload all commits of the version under a topic that holds the version name (i.e. "git review -t {version_name}")
+    """
+    try:
+        version = get_version_by_hash(key)
+    except KeyError:
+        version = get_version_by_name(key)
+    if version:
+        print(yaml.dump(version))
+    api.operation_review(version)
+
+@app.command()
 def add(name: str, load: str="", unload: str="", description: str="", identifier: str="", init: bool=False):
     """
     Adds a new version. add --help to see detailed example
