@@ -2,7 +2,7 @@
 
 ## Desctiprion
 
-** vgit is small tool that helps writing commits that span on multi-repositories projects **
+**vgit is small tool that helps writing commits that span on multi-repositories projects**
 
 vgit holds yaml file for each super repo, that looks like:
 ~~~
