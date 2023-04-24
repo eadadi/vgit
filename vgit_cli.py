@@ -107,16 +107,45 @@ def add(name: str, load: str="", unload: str="", description: str="", identifier
 
     try:
         if identifier == "":
-            new_version, identifier = make_version_and_hash(versions, name, description, action_repo_branch, unload_branches)
+            new_version, identifier = api.make_version_and_hash(versions, name, description, action_repo_branch, unload_branches)
         else:
-            new_version, identifier = make_version_and_hash(versions, name, description, action_repo_branch, identifier, unload_branches)
+            new_version, identifier = api.make_version_and_hash(versions, name, description, action_repo_branch, identifier, unload_branches)
     except KeyError:
             print("There is an entry that already holds that version hash value. Consider using custom identifier")
             return
 
-    add_version_to_super_repo(versions, new_version, identifier)
+    api.add_version_to_super_repo(versions, new_version, identifier)
     if init:
-        operation_load(new_version, init_flag = True)
+        api.operation_load(new_version, init_flag = True)
+
+@app.command()
+def clone(name: str, clone_name: str, clone_suffix: str="_clone"):
+    """
+    Clones a new version out of a given one, for example, for debug purposes.
+
+    Note that the branches of the cloned version should be exists before cloning
+
+    If --clone_suffix is not given, the cloned branches names is {name}_clone.
+    """
+
+    versions = api.get_versions()
+    try:
+        version = api.get_version_by_name(name)
+    except KeyError:
+        print("No version with this name")
+        return
+    for stage in version["load"]:
+        clone_branch_name = stage["branch"] + clone_suffix
+
+        api.do_checkout(stage, init_flag=False)
+        stage["branch"] = clone_branch_name
+        api.do_checkout(stage, init_flag=True)
+
+    import hashlib
+    identifier = hashlib.sha1(yaml.dump(version).encode('utf-8')).hexdigest()
+    api.add_version_to_super_repo(versions, version, identifier)
+    print("clone done")
+
 
 if __name__ == "__main__":
     app()

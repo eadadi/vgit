@@ -59,5 +59,29 @@ vg load some_feature
 
 to load this feature so we can work on it.
 
+On some stage, there might be a need to diverge from the version. For example, there might be a need to make some changes that are needed for debug, or there might be another way to implement the commit that you want to consider. In this case, normally, one would go through all the commits that compound the change and will checkout to a new branches for this debug/tweak. with vgit, you can simply
+
+~~~
+vg clone some_feature some_feature_new_api
+vg load some_feature_new_api
+~~~
+
+so that the cloned version will look like:
+~~~
+a16cd48b9c64b9f88510914fd0c6c858fe57b473:
+  Description: A short description for that feature
+  Name: some_feature_new_api
+  load:
+  - action: checkout
+    branch: BRANCH1_clone
+    repo: REPO1
+  - action: checkout
+    branch: BRANCH2_clone
+    repo: REPO2
+  unload:
+  - master
+  - mainline
+~~~
+
 * Note that load, etc can be done both by hash and by version name. Although, the unique identifier is the hash number
 
