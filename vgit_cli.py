@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import typer
-from vgit_api import get_versions, get_version_by_hash, make_version_and_hash, add_version_to_super_repo, operation_load, get_version_by_name
 import vgit_api as api
 import yaml
 from yaml import CLoader as Loader, CDumper as Dumper
@@ -21,7 +20,7 @@ def ls():
     Display all existing versions
     """
     try:
-        versions = get_versions()
+        versions = api.get_versions()
     except FileNotFoundError:
         print("Current repository was not initialized. run init command")
         return
@@ -33,15 +32,15 @@ def load(key: str):
     Load the version corresponding to the argument (can be either the hash value or version name)
     """
     try:
-        version = get_version_by_hash(key)
+        version = api.get_version_by_hash(key)
     except KeyError:
-        version = get_version_by_name(key)
+        version = api.get_version_by_name(key)
     except FileNotFoundError:
         print("Current repository was not initialized. run init command")
         return
     if version:
         print(yaml.dump(version))
-    operation_load(version)
+    api.operation_load(version)
 
 @app.command()
 def unload(key: str):
@@ -49,9 +48,9 @@ def unload(key: str):
     Unload the version corresponding to the argument (can be either the hash value or version name)
     """
     try:
-        version = get_version_by_hash(key)
+        version = api.get_version_by_hash(key)
     except KeyError:
-        version = get_version_by_name(key)
+        version = api.get_version_by_name(key)
     if version:
         print(yaml.dump(version))
     api.operation_unload(version)
@@ -62,9 +61,9 @@ def pull(key: str):
     Pull rebase for version corresponding to the argument (can be either the hash value or version name)
     """
     try:
-        version = get_version_by_hash(key)
+        version = api.get_version_by_hash(key)
     except KeyError:
-        version = get_version_by_name(key)
+        version = api.get_version_by_name(key)
     if version:
         print(yaml.dump(version))
     api.operation_pull(version)
@@ -75,9 +74,9 @@ def review(key: str):
     Uploads patch to gerrit review system, The behaviour is to upload all commits of the version under a topic that holds the version name (i.e. "git review -t {version_name}")
     """
     try:
-        version = get_version_by_hash(key)
+        version = api.get_version_by_hash(key)
     except KeyError:
-        version = get_version_by_name(key)
+        version = api.get_version_by_name(key)
     if version:
         print(yaml.dump(version))
     api.operation_review(version)
@@ -89,12 +88,12 @@ def add(name: str, load: str="", unload: str="", description: str="", identifier
 
     For example:
 
-    add --name my_patch --description quick patch --load [action repo repo_branch..] --unload [branch branch..]
+    add my_patch --description quick patch --load [action repo repo_branch..] --unload [branch branch..]
 
     --init will create those branches too
-    --unload should followed by list of branches to checkout in the same order of repos as specified in --load
+    --unload should be followed by list of branches to checkout in the same order as in --load
     """
-    versions = get_versions()
+    versions = api.get_versions()
     tmp = load.split()
     if len(tmp) % 3 != 0:
         print("repo/branch/action are missing")
