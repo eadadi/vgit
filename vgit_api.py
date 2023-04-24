@@ -62,7 +62,7 @@ def do_checkout(stage, init_flag):
 
 def do_cherrypick(stage, init_flag):
     g = git.cmd.Git()
-    return g.execute(["git","cherry-pick","-n", stage["branch"])
+    return g.execute(["git","cherry-pick","-n", stage["branch"]])
 
 def do_pull(stage, init_flag=False):
     repo = git.Repo(stage["repo"]).git
