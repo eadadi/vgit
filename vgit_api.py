@@ -20,7 +20,7 @@ def load_versions_of_current_super_repo():
     try:
         versions_file = open("{0}/{1}.yaml".format(HOME_FOLDER, cwd), "r")
     except FileNotFoundError:
-        print("versions file {0}/{1}.yaml was not founded. run init".format(HOME_FOLDER, cwd))
+        raise FileNotFoundError("versions file {0}/{1}.yaml was not founded. run init".format(HOME_FOLDER, cwd))
         return
     versions = yaml.load(versions_file.read(), Loader=Loader)
     return versions
@@ -37,7 +37,10 @@ def get_versions():
 
 def get_version_by_hash(hash_value):
     versions = load_versions_of_current_super_repo()
-    return versions[hash_value]
+    try:
+        versions[hash_value]
+    except KeyError:
+        raise KeyError("no version has the identifier {}".format(hash_value))
 
 def get_version_by_name(name):
     versions = load_versions_of_current_super_repo()
@@ -46,8 +49,7 @@ def get_version_by_name(name):
     if len(filtered_names) == 0:
         raise KeyError("No version has this name..")
     if len(filtered_names) > 1:
-        print(filtered_names)
-        raise KeyError("Multiple versions have this name..\n{}".format(filtered_names))
+        raise KeyError("Multiple versions have the name {}..".format(name))
     return versions[filtered_names[0][0]]
 
 def dump_version_by_hash(hash_value):
@@ -97,7 +99,11 @@ def operation_load(version, init_flag = False):
         print(output)
 
 def operation_unload(version):
-    unload_branches = version["unload"]
+    try:
+        unload_branches = version["unload"]
+    except KeyError:
+        raise KeyError("unload operation is not supported in {}".format(version["Name"]))
+        return
     for idx, stage in enumerate(version["load"]):
         stage["branch"] = unload_branches[idx]
     return operation_load(version)
@@ -113,15 +119,19 @@ def operation_pull(version):
 def make_version_and_hash(versions, name, description, action_repo_branch, unload_branches, identifier=None):
     version = {
             "Name": name,
-            "Description": description,
             "load": [
                 {
                 "action": action,
                 "repo": repo,
                 "branch": branch
                 } for action, repo, branch in action_repo_branch],
-            "unload": [branch for branch in unload_branches]
             }
+
+    if unload_branches != "":
+        version["unload"] = [branch for branch in unload_branches]
+
+    if desctiption != "":
+        version["Description"] = description
 
     if identifier == None:
         version_string = yaml.dump(version)
