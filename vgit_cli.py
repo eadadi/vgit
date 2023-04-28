@@ -29,7 +29,7 @@ def ls():
 @app.command()
 def load(key: str, quiet: bool=False):
     """
-    Load the version corresponding to the argument (can be either the hash value or version name)
+    Loads a version (can be either hash value or version name)
     """
     try:
         version = api.get_version_by_hash(key)
@@ -50,7 +50,7 @@ def load(key: str, quiet: bool=False):
 @app.command()
 def unload(key: str):
     """
-    Unload the version corresponding to the argument (can be either the hash value or version name)
+    Unload version corresponding to the argument. It is not assert that the specified version was loaded.
     """
     try:
         version = api.get_version_by_hash(key)
@@ -69,7 +69,7 @@ def unload(key: str):
 @app.command()
 def pull(key: str):
     """
-    Pull rebase for version corresponding to the argument (can be either the hash value or version name)
+    Pull rebase a version (can be either hash value or version name)
     """
     try:
         version = api.get_version_by_hash(key)
@@ -82,7 +82,10 @@ def pull(key: str):
 @app.command()
 def review(key: str):
     """
-    Uploads patch to gerrit review system, The behaviour is to upload all commits of the version under a topic that holds the version name (i.e. "git review -t {version_name}")
+    Uploads patch to gerrit review system, with the version name as a topic name (i.e. "git review -t {version_name}")
+
+    Note that this commands assume that all repositories in this version supposed to be upload to gerrit.
+    For better granularity, update upload_cmd for each component, and use --upload cmd (not supported yet)
     """
     try:
         version = api.get_version_by_hash(key)
