@@ -159,6 +159,8 @@ def clone(name: str, clone_name: str, clone_suffix: str="_clone"):
 
     import hashlib
     identifier = hashlib.sha1(yaml.dump(version).encode('utf-8')).hexdigest()
+
+    version["Name"] = clone_name
     api.add_version_to_super_repo(versions, version, identifier)
     print("clone done")
 
