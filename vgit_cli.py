@@ -15,16 +15,54 @@ def init():
 
 
 @app.command()
-def ls():
+def ls(name: str="", minimal: bool=True, oneline: bool=True):
     """
-    Display all existing versions
+    Display some/all versions
+
+    --name: specify to show specific versions, can be partial name too
+    --minimal: print only name and branches
+    --oneline: each version output spans on one line (ignored if --no-minimal)
     """
     try:
         versions = api.get_versions()
     except FileNotFoundError:
         print("Current repository was not initialized. run init command")
         return
-    print(yaml.dump(versions))
+    
+    if name!="":
+        try:
+            version = api.get_version_by_hash(name)
+            versions = {name: version}
+        except KeyError:
+            try:
+                version = api.get_version_by_name(name)
+                versions = {"default_identifier": version}
+            except KeyError as e:
+                print(e)
+                if name in e.args[0]:
+                    versions = api.get_versions()
+                    filtered = {}
+                    for key in versions:
+                        if name in versions[key]["Name"]:
+                            filtered[key] = versions[key]
+                    versions = filtered
+                else:
+                    return
+
+
+    if not minimal:
+        print(yaml.dump(versions))
+        return
+    for key in versions:
+        version = versions[key]
+        if not oneline:
+            print("{}:".format(version["Name"]))
+            for step in version["load"]:
+                print("\t{}:{}".format(step["repo"],step["branch"]))
+        else:
+            branch_repos = ", ".join(["{}({})".format(step["repo"], step["branch"]) for step in version["load"]])
+            print ("{}: {}".format(version["Name"], branch_repos))
+
 
 @app.command()
 def load(key: str, quiet: bool=False):

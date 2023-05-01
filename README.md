@@ -82,5 +82,11 @@ a16cd48b9c64b9f88510914fd0c6c858fe57b473:
   - mainline
 ~~~
 
+On any time under the super repository folder it is possible to run
+~~~
+vg ls [--name version name/ partial name] [--minimal --no-minimal] [--oneline --no-oneline]
+~~~
+to see all existed versions in this repository
+
 * Note that load, etc can be done both by hash and by version name. Although, the unique identifier is the hash number
 
